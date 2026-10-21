@@ -26,6 +26,6 @@ describe("metric formulas", () => {
       { t: "2026-10-10T00:00:00Z", followers: 3 }, // 10 days: too recent
     ];
     expect(findComparable(series, ref, 30)?.followers).toBe(2);
-    expect(findComparable([series[0]], ref, 30)).toBeNull();
+    expect(findComparable([series[0]!], ref, 30)).toBeNull();
   });
 });

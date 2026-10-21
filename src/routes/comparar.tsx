@@ -58,7 +58,7 @@ function Compare() {
             })}
           </div>
           <div className="card-slim mt-6 p-4">
-            <HistoryChart series={accs.map((a, i) => a ? { key: a.id, label: people[i].data?.name ?? "", points: (h.data ?? []).filter((x) => x.account_id === a.id).map((x) => ({ t: x.captured_at, v: x.followers })) } : null).filter((x): x is NonNullable<typeof x> => !!x)} />
+            <HistoryChart series={accs.map((a, i) => a ? { key: a.id, label: people[i]?.data?.name ?? "", points: (h.data ?? []).filter((x) => x.account_id === a.id).map((x) => ({ t: x.captured_at, v: x.followers })) } : null).filter((x): x is NonNullable<typeof x> => !!x)} />
           </div>
         </>
       )}
