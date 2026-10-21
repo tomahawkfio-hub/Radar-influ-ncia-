@@ -226,7 +226,7 @@ function MetricsPanel({ people, accounts, sources, userId, busy, action }: Panel
     }
   }
   async function saveManual(e:FormEvent){e.preventDefault();await action("Registro manual",async()=>{
-    const d=new Date(date);
+    const d=new Date(date.endsWith("Z") ? date : date + "Z");
     if(Number.isNaN(d.getTime())) throw new Error("Data inválida");
     const record=parseSnapshotCsv([
       "account_id,captured_at,followers,avg_likes,avg_comments,is_estimate,approved",

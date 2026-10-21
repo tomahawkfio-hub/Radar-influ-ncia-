@@ -34,7 +34,7 @@ function AdminGate() {
       }
     }
     void check();
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => { void check(); });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => { setTimeout(() => { void check(); }, 0); });
     return () => { active = false; subscription.unsubscribe(); };
   }, []);
 
