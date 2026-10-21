@@ -1,0 +1,18 @@
+name: Validar Radar de Influência
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - name: Instalar dependências
+        run: bun install --frozen-lockfile
+      - name: Executar testes
+        run: bunx vitest run
+      - name: Compilar aplicação
+        run: bun run build
