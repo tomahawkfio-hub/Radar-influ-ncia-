@@ -58,6 +58,20 @@ function AdminLogin() {
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [linkSent, setLinkSent] = useState(false);
+  async function sendMagicLink() {
+    if (!email.trim()) { setError("Informe seu e-mail."); return; }
+    setBusy(true); setError(""); setLinkSent(false);
+    try {
+      const { error: requestError } = await supabase.auth.signInWithOtp({
+        email: email.trim(),
+        options: { shouldCreateUser: true, emailRedirectTo: `${window.location.origin}/admin` },
+      });
+      if (requestError) throw requestError;
+      setLinkSent(true);
+    } catch (e) { setError(e instanceof Error ? e.message : "Não foi possível enviar o link."); }
+    finally { setBusy(false); }
+  }
   async function signIn(event: React.FormEvent) {
     event.preventDefault(); setBusy(true); setError("");
     try {
@@ -71,7 +85,7 @@ function AdminLogin() {
       <form className="card-slim space-y-4 p-6" onSubmit={(e) => void signIn(e)}>
         <div>
           <h1 className="text-2xl font-bold">Acesso administrativo</h1>
-          <p className="mt-2 text-sm text-muted-foreground">Somente contas previamente autorizadas. Não há cadastro público de administradores.</p>
+          <p className="mt-2 text-sm text-muted-foreground">O acesso administrativo é concedido separadamente após a verificação do e-mail. Entrar não concede permissões automaticamente.</p>
         </div>
         <label className="block text-sm">E-mail
           <input type="email" autoComplete="username" required value={email} onChange={(e) => setEmail(e.target.value)} className="mt-1 w-full rounded-lg border bg-card p-2.5" />
@@ -80,7 +94,11 @@ function AdminLogin() {
           <input type="password" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} className="mt-1 w-full rounded-lg border bg-card p-2.5" />
         </label>
         {error && <p role="alert" className="text-sm text-danger">{error}</p>}
-        <button disabled={busy} type="submit" className="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground disabled:opacity-50">{busy ? "Entrando…" : "Entrar"}</button>
+        {linkSent && <p role="status" className="rounded-lg border border-success/30 p-3 text-sm text-success">Se o serviço de autenticação estiver habilitado, você receberá um link de acesso no e-mail informado. Verifique também o spam. Ao entrar, aguarde a liberação administrativa.</p>}
+        <button disabled={busy} type="submit" className="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground disabled:opacity-50">{busy ? "Entrando…" : "Entrar com senha"}</button>
+        <div className="relative py-1 text-center text-xs text-muted-foreground">ou</div>
+        <button disabled={busy || !email.trim()} type="button" onClick={() => void sendMagicLink()} className="w-full rounded-lg border bg-card px-4 py-2.5 text-sm font-medium disabled:opacity-50">Receber link de acesso por e-mail</button>
+        <p className="text-xs text-muted-foreground">O endereço da aplicação precisa estar autorizado nos redirecionamentos do Supabase Auth. Nunca envie senhas por mensagens.</p>
       </form>
     </div>
   );
