@@ -74,7 +74,7 @@ export function parseSnapshotCsv(text: string): ParsedSnapshot[] {
   const rows = csvRows(text);
   if (rows.length < 2) throw new Error("O arquivo deve conter cabeçalho e pelo menos um registro.");
   if (rows.length > 501) throw new Error("Limite de 500 registros por importação.");
-  const header = rows[0].map((s) => s.toLowerCase().trim());
+  const header = rows[0]!.map((s) => s.toLowerCase().trim());
   if (new Set(header).size !== header.length) throw new Error("Cabeçalhos duplicados.");
   for (const h of ["account_id", "captured_at", "followers"]) if (!header.includes(h)) throw new Error("Cabeçalho obrigatório ausente: " + h);
   if (header.some((h) => !columns.includes(h as typeof columns[number]))) throw new Error("Cabeçalho desconhecido.");

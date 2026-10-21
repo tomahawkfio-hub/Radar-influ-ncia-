@@ -14,7 +14,7 @@ export function HistoryChart({ series, height = 300, valueLabel = "Seguidores" }
       row[s.key] = p.v;
       map.set(day, row);
     }
-  const data = [...map.values()].sort((a, b) => String(a.day).localeCompare(String(b.day)));
+  const data = [...map.values()].sort((a, b) => String(a['day']).localeCompare(String(b['day'])));
 
   if (data.length < 2)
     return (

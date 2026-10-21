@@ -2,15 +2,15 @@ import { queryOptions } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
 export type RankingParams = {
-  region?: "br" | "world";
-  country?: string;
-  category?: string;
-  platform?: string;
+  region?: "br" | "world" | undefined;
+  country?: string | undefined;
+  category?: string | undefined;
+  platform?: string | undefined;
   periodDays: number;
   sort: string;
-  q?: string;
-  party?: string;
-  office?: string;
+  q?: string | undefined;
+  party?: string | undefined;
+  office?: string | undefined;
   limit: number;
   offset: number;
 };
@@ -45,14 +45,14 @@ export const rankingQuery = (p: RankingParams) =>
     queryFn: async () => {
       const { data, error } = await supabase.rpc("get_ranking", {
         p_region: p.region ?? "world",
-        p_country: p.country || undefined,
-        p_category: p.category || undefined,
-        p_platform: p.platform || undefined,
+        ...(p.country ? { p_country: p.country } : {}),
+        ...(p.category ? { p_category: p.category } : {}),
+        ...(p.platform ? { p_platform: p.platform } : {}),
         p_period_days: p.periodDays,
         p_sort: p.sort,
-        p_search: p.q?.trim() || undefined,
-        p_party: p.party || undefined,
-        p_office: p.office || undefined,
+        ...(p.q?.trim() ? { p_search: p.q?.trim() } : {}),
+        ...(p.party ? { p_party: p.party } : {}),
+        ...(p.office ? { p_office: p.office } : {}),
         p_limit: p.limit,
         p_offset: p.offset,
       });
